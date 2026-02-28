@@ -13,6 +13,7 @@ pub fn init(_ctx: &ReducerContext) {
 #[spacetimedb::reducer(client_connected)]
 pub fn identity_connected(_ctx: &ReducerContext) {
     // Called everytime a new client connects
+    log::info!("Client connected: {:?}", _ctx.sender());
 }
 
 #[spacetimedb::reducer(client_disconnected)]
