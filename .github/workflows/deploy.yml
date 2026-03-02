@@ -19,11 +19,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+          cache: true
+
       - name: Install mise and build
         uses: jdx/mise-action@v3
         with:
           install: true
           cache: true
+
+      - name: Install SpacetimeDB
+        run: curl -sSf https://install.spacetimedb.com | sh
 
       - name: Check
         run: mise check
@@ -35,7 +44,7 @@ jobs:
           NEXT_PUBLIC_SPACETIMEDB_MODULE: aether-voices-01
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@3
+        uses: actions/upload-pages-artifact@2
         with:
           path: web/out
 
