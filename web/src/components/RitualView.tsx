@@ -1,9 +1,91 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useTable, useSpacetimeDB, useReducer } from "spacetimedb/react";
+import { useTable, useReducer } from "spacetimedb/react";
 import { tables, reducers } from "@/module_bindings";
 import type { Message } from "@/module_bindings/types";
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function formatMessageTime(sent: Message["sent"]): string {
+  if (sent == null) return "—";
+  const date = sent.toDate();
+  return date.toLocaleString(undefined, {
+    dateStyle: "short",
+    timeStyle: "medium",
+  });
+}
+
+function formatCountry(location: Message["location"]): string {
+  if (!location || typeof location !== "object") return "—";
+  const tag = "tag" in location ? (location as { tag: string }).tag : "";
+  return String(tag).toUpperCase() || "—";
+}
+
+// ---------------------------------------------------------------------------
+// Message subcomponents
+// ---------------------------------------------------------------------------
+
+type MessageItem = Message & { type: "ghost" | "initiator" };
+
+function GhostMessageBubble({ message }: { message: Message }) {
+  return (
+    <div className="flex justify-start">
+      <div className="max-w-[85%] rounded-2xl rounded-bl-md bg-stone-600/80 px-4 py-2 text-stone-100">
+        <p className="text-sm whitespace-pre-wrap wrap-break-word">
+          {message.text || "\u00A0"}
+        </p>
+        <p className="mt-1 text-xs text-stone-400">
+          {formatMessageTime(message.sent)} · {formatCountry(message.location)}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function InitiatorMessageBubble({ message }: { message: Message }) {
+  return (
+    <div className="flex justify-end">
+      <div className="max-w-[85%] rounded-2xl rounded-br-md bg-amber-900/60 px-4 py-2 text-amber-100">
+        <p className="text-sm whitespace-pre-wrap wrap-break-word">
+          {message.text || "\u00A0"}
+        </p>
+        <p className="mt-1 text-right text-xs text-amber-200/70">
+          {formatMessageTime(message.sent)} · {formatCountry(message.location)}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function MessageBubble({ item }: { item: MessageItem }) {
+  return item.type === "ghost" ? (
+    <GhostMessageBubble message={item} />
+  ) : (
+    <InitiatorMessageBubble message={item} />
+  );
+}
+
+function GhostWritingIndicator() {
+  return (
+    <div className="flex justify-start">
+      <div className="flex items-center gap-1 rounded-2xl rounded-bl-md bg-stone-600/80 px-4 py-2 text-stone-300">
+        <span className="inline-flex gap-1">
+          <span className="h-2 w-2 rounded-full bg-stone-400 animate-bounce [animation-delay:-0.3s]" />
+          <span className="h-2 w-2 rounded-full bg-stone-400 animate-bounce [animation-delay:-0.15s]" />
+          <span className="h-2 w-2 rounded-full bg-stone-400 animate-bounce" />
+        </span>
+        <span className="text-sm">Ghost is writing…</span>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Main view
+// ---------------------------------------------------------------------------
 
 export function RitualView() {
   const [sessionRows] = useTable(tables.user_active_session);
@@ -34,8 +116,8 @@ export function RitualView() {
     const all: Array<Message & { type: "ghost" | "initiator" }> = [];
     const maxLen = Math.max(ghost.length, initiator.length);
     for (let i = 0; i < maxLen; i++) {
-      if (i < initiator.length) all.push(initiator[i]);
       if (i < ghost.length) all.push(ghost[i]);
+      if (i < initiator.length) all.push(initiator[i]);
     }
     return all;
   }, [currentSession]);
@@ -65,35 +147,9 @@ export function RitualView() {
     <section className="flex-1 flex flex-col min-h-0 border-t border-stone-700/50">
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {mergedMessages.map((item) => (
-          <div
-            key={`${item.type}-${item.messageId}`}
-            className={`flex ${item.type === "initiator" ? "justify-end" : "justify-start"}`}
-          >
-            <div
-              className={`max-w-[85%] rounded-2xl px-4 py-2 ${
-                item.type === "ghost"
-                  ? "bg-stone-600/80 text-stone-100 rounded-bl-md"
-                  : "bg-amber-900/60 text-amber-100 rounded-br-md"
-              }`}
-            >
-              <p className="text-sm whitespace-pre-wrap wrap-break-word">
-                {item.text || "\u00A0"}
-              </p>
-            </div>
-          </div>
+          <MessageBubble key={`${item.type}-${item.messageId}`} item={item} />
         ))}
-        {showWritingIndicator && (
-          <div className="flex justify-start">
-            <div className="bg-stone-600/80 text-stone-300 rounded-2xl rounded-bl-md px-4 py-2 flex items-center gap-1">
-              <span className="inline-flex gap-1">
-                <span className="w-2 h-2 rounded-full bg-stone-400 animate-bounce [animation-delay:-0.3s]" />
-                <span className="w-2 h-2 rounded-full bg-stone-400 animate-bounce [animation-delay:-0.15s]" />
-                <span className="w-2 h-2 rounded-full bg-stone-400 animate-bounce" />
-              </span>
-              <span className="text-sm">Ghost is writing…</span>
-            </div>
-          </div>
-        )}
+        {showWritingIndicator && <GhostWritingIndicator />}
       </div>
       <form
         onSubmit={handleSubmit}
