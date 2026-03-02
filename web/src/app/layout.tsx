@@ -4,6 +4,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Aether: The Graveyard of Voices",
   description: "Anonymous real-time séance — reanimate the voices of the past.",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({

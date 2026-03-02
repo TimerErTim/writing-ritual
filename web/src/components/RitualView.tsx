@@ -230,7 +230,7 @@ export function RitualView() {
   if (!currentSession) {
     return (
       <section className="flex-1 flex items-center justify-center p-6 text-stone-500">
-        <p>No active session. Start a ritual from the map.</p>
+        <p>No active session. Waiting for ritual to start...</p>
       </section>
     );
   }
