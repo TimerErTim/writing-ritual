@@ -10,21 +10,13 @@ import {
   type Infer as __Infer,
 } from "spacetimedb";
 import {
-  SessionState,
-  Message,
+  BookWordView,
 } from "./types";
 
 
 export default __t.row({
-  get ghostMessages() {
-    return __t.array(Message).name("ghost_messages");
+  carretPosition: __t.u32().name("carret_position"),
+  get words() {
+    return __t.array(BookWordView);
   },
-  get initiatorMessages() {
-    return __t.array(Message).name("initiator_messages");
-  },
-  get state() {
-    return SessionState;
-  },
-  initiatedOn: __t.timestamp().name("initiated_on"),
-  isComplete: __t.bool().name("is_complete"),
 });

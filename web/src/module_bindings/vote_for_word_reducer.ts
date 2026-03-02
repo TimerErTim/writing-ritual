@@ -10,4 +10,13 @@ import {
   type Infer as __Infer,
 } from "spacetimedb";
 
-export default {};
+import {
+  Iso3166Alpha2,
+} from "./types";
+
+export default {
+  word: __t.string(),
+  get location() {
+    return Iso3166Alpha2;
+  },
+};

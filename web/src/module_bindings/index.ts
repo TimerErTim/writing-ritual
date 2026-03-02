@@ -34,33 +34,45 @@ import {
 } from "spacetimedb";
 
 // Import all reducer arg schemas
-import CancelActiveSessionsUserReducer from "./cancel_active_sessions_user_reducer";
-import StartNewSessionReducer from "./start_new_session_reducer";
-import SubmitMessageReducer from "./submit_message_reducer";
+import VoteForWordReducer from "./vote_for_word_reducer";
 
 // Import all procedure arg schemas
 
 // Import all table schema definitions
-import UserActiveSessionRow from "./user_active_session_table";
+import CurrentBookViewRow from "./current_book_view_table";
+import CurrentWordVotesRow from "./current_word_votes_table";
+import MyVoteRow from "./my_vote_table";
 
 /** Type-only namespace exports for generated type groups. */
 
 /** The schema information for all tables in this module. This is defined the same was as the tables would have been defined in the server. */
 const tablesSchema = __schema({
-  user_active_session: __table({
-    name: 'user_active_session',
+  current_book_view: __table({
+    name: 'current_book_view',
     indexes: [
     ],
     constraints: [
     ],
-  }, UserActiveSessionRow),
+  }, CurrentBookViewRow),
+  current_word_votes: __table({
+    name: 'current_word_votes',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, CurrentWordVotesRow),
+  my_vote: __table({
+    name: 'my_vote',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, MyVoteRow),
 });
 
 /** The schema information for all reducers in this module. This is defined the same way as the reducers would have been defined in the server, except the body of the reducer is omitted in code generation. */
 const reducersSchema = __reducers(
-  __reducerSchema("cancel_active_sessions_user", CancelActiveSessionsUserReducer),
-  __reducerSchema("start_new_session", StartNewSessionReducer),
-  __reducerSchema("submit_message", SubmitMessageReducer),
+  __reducerSchema("vote_for_word", VoteForWordReducer),
 );
 
 /** The schema information for all procedures in this module. This is defined the same way as the procedures would have been defined in the server. */

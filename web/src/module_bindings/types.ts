@@ -10,45 +10,93 @@ import {
   type Infer as __Infer,
 } from "spacetimedb";
 
-export const ActiveSession = __t.object("ActiveSession", {
-  seanceId: __t.u64(),
-  initiator: __t.identity(),
-  finishedSeanceRef: __t.u64(),
-  ghostMessages: __t.array(__t.u64()),
-  initiatorMessages: __t.array(__t.u64()),
-  currentSteps: __t.u32(),
-  get state() {
-    return SessionState;
-  },
-  initiatedOn: __t.timestamp(),
+export const Book = __t.object("Book", {
+  id: __t.u64(),
+  title: __t.string(),
+  author: __t.string(),
+  carretPosition: __t.u32(),
+  startedAt: __t.timestamp(),
 });
-export type ActiveSession = __Infer<typeof ActiveSession>;
+export type Book = __Infer<typeof Book>;
 
-export const CurrentSession = __t.object("CurrentSession", {
-  get ghostMessages() {
-    return __t.array(Message);
+export const BookWord = __t.object("BookWord", {
+  id: __t.u64(),
+  bookId: __t.u64(),
+  decidedAt: __t.timestamp(),
+  get voteDistribution() {
+    return __t.array(BookWordVotes);
   },
-  get initiatorMessages() {
-    return __t.array(Message);
-  },
-  get state() {
-    return SessionState;
-  },
-  initiatedOn: __t.timestamp(),
-  isComplete: __t.bool(),
 });
-export type CurrentSession = __Infer<typeof CurrentSession>;
+export type BookWord = __Infer<typeof BookWord>;
 
-export const FinishedSession = __t.object("FinishedSession", {
-  seanceId: __t.u64(),
-  initiator: __t.identity(),
-  ghostMessages: __t.array(__t.u64()),
-  initiatorMessages: __t.array(__t.u64()),
-  totalSteps: __t.u32(),
-  initiatedOn: __t.timestamp(),
-  finishedOn: __t.timestamp(),
+export const BookWordCandidate = __t.object("BookWordCandidate", {
+  id: __t.u64(),
+  bookId: __t.u64(),
+  word: __t.string(),
+  position: __t.u32(),
 });
-export type FinishedSession = __Infer<typeof FinishedSession>;
+export type BookWordCandidate = __Infer<typeof BookWordCandidate>;
+
+export const BookWordView = __t.object("BookWordView", {
+  word: __t.string(),
+  decidedAt: __t.timestamp(),
+  get votesDistribution() {
+    return __t.array(BookWordVotesView);
+  },
+});
+export type BookWordView = __Infer<typeof BookWordView>;
+
+export const BookWordVote = __t.object("BookWordVote", {
+  id: __t.u64(),
+  candidateId: __t.u64(),
+  voter: __t.identity(),
+  get location() {
+    return Iso3166Alpha2;
+  },
+});
+export type BookWordVote = __Infer<typeof BookWordVote>;
+
+export const BookWordVotes = __t.object("BookWordVotes", {
+  candidateId: __t.u64(),
+  voteCount: __t.u32(),
+});
+export type BookWordVotes = __Infer<typeof BookWordVotes>;
+
+export const BookWordVotesView = __t.object("BookWordVotesView", {
+  word: __t.string(),
+  voteCount: __t.u32(),
+});
+export type BookWordVotesView = __Infer<typeof BookWordVotesView>;
+
+export const BookWordVotingEnds = __t.object("BookWordVotingEnds", {
+  id: __t.u64(),
+  bookId: __t.u64(),
+  position: __t.u32(),
+  scheduledAt: __t.scheduleAt(),
+});
+export type BookWordVotingEnds = __Infer<typeof BookWordVotingEnds>;
+
+export const CurrentBookView = __t.object("CurrentBookView", {
+  carretPosition: __t.u32(),
+  get words() {
+    return __t.array(BookWordView);
+  },
+});
+export type CurrentBookView = __Infer<typeof CurrentBookView>;
+
+export const CurrentCandidateView = __t.object("CurrentCandidateView", {
+  word: __t.string(),
+  votesAmount: __t.u32(),
+});
+export type CurrentCandidateView = __Infer<typeof CurrentCandidateView>;
+
+export const CurrentVotingView = __t.object("CurrentVotingView", {
+  votingEnds: __t.timestamp(),
+  get candidates() {
+    return __t.array(CurrentCandidateView);
+  },
+});
+export type CurrentVotingView = __Infer<typeof CurrentVotingView>;
 
 // The tagged union or sum type for the algebraic type `Iso3166Alpha2`.
 export const Iso3166Alpha2 = __t.enum("Iso3166Alpha2", {
@@ -252,28 +300,11 @@ export const Iso3166Alpha2 = __t.enum("Iso3166Alpha2", {
 });
 export type Iso3166Alpha2 = __Infer<typeof Iso3166Alpha2>;
 
-export const Message = __t.object("Message", {
-  messageId: __t.u64(),
-  text: __t.string(),
-  sender: __t.identity(),
-  sent: __t.timestamp(),
+export const MyVote = __t.object("MyVote", {
+  word: __t.string(),
   get location() {
     return Iso3166Alpha2;
   },
 });
-export type Message = __Infer<typeof Message>;
-
-export const SendGhostMessage = __t.object("SendGhostMessage", {
-  seanceId: __t.u64(),
-  scheduledAt: __t.scheduleAt(),
-});
-export type SendGhostMessage = __Infer<typeof SendGhostMessage>;
-
-// The tagged union or sum type for the algebraic type `SessionState`.
-export const SessionState = __t.enum("SessionState", {
-  WaitingForInitiator: __t.unit(),
-  GhostWriting: __t.unit(),
-  Idle: __t.unit(),
-});
-export type SessionState = __Infer<typeof SessionState>;
+export type MyVote = __Infer<typeof MyVote>;
 

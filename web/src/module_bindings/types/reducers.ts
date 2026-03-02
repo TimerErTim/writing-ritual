@@ -6,11 +6,7 @@
 import { type Infer as __Infer } from "spacetimedb";
 
 // Import all reducer arg schemas
-import CancelActiveSessionsUserReducer from "../cancel_active_sessions_user_reducer";
-import StartNewSessionReducer from "../start_new_session_reducer";
-import SubmitMessageReducer from "../submit_message_reducer";
+import VoteForWordReducer from "../vote_for_word_reducer";
 
-export type CancelActiveSessionsUserParams = __Infer<typeof CancelActiveSessionsUserReducer>;
-export type StartNewSessionParams = __Infer<typeof StartNewSessionReducer>;
-export type SubmitMessageParams = __Infer<typeof SubmitMessageReducer>;
+export type VoteForWordParams = __Infer<typeof VoteForWordReducer>;
 

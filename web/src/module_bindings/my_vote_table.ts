@@ -9,14 +9,14 @@ import {
   type AlgebraicTypeType as __AlgebraicTypeType,
   type Infer as __Infer,
 } from "spacetimedb";
-
 import {
   Iso3166Alpha2,
 } from "./types";
 
-export default {
-  text: __t.string(),
+
+export default __t.row({
+  word: __t.string(),
   get location() {
     return Iso3166Alpha2;
   },
-};
+});

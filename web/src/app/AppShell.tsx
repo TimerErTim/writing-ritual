@@ -3,20 +3,13 @@
 import { useMemo } from "react";
 import { DbConnection } from "@/module_bindings";
 import { SpacetimeDBProvider } from "spacetimedb/react";
-import { RitualView } from "@/components/RitualView";
+import { MainView } from "@/components/MainView";
 
-function AppContent() {
-  return (
-    <main className="h-screen flex flex-col overflow-hidden">
-      <RitualView />
-    </main>
-  );
-}
-
-export default function CatchAllPage() {
+export function AppShell() {
   const uri = process.env.NEXT_PUBLIC_SPACETIMEDB_URI ?? "http://localhost:3000";
   const dbName = process.env.NEXT_PUBLIC_SPACETIMEDB_MODULE ?? "hive-author-01";
-  var localStorage = typeof window !== "undefined" && window.localStorage ? window.localStorage : null
+  const storage =
+    typeof window !== "undefined" && window.localStorage ? window.localStorage : null;
 
   const connectionBuilder = useMemo(
     () =>
@@ -27,17 +20,21 @@ export default function CatchAllPage() {
           console.error("SpacetimeDB connection error:", err);
         })
         .onConnect((conn) => {
-          if (typeof conn.token === "string" && localStorage !== null) {
+          if (typeof conn.token === "string" && storage !== null) {
             window.localStorage.setItem("spacetime-token", conn.token);
           }
         })
-        .withToken(localStorage !== null ? localStorage.getItem("spacetime-token") ?? undefined : undefined),
+        .withToken(
+          storage !== null ? storage.getItem("spacetime-token") ?? undefined : undefined
+        ),
     [uri, dbName]
   );
 
   return (
     <SpacetimeDBProvider connectionBuilder={connectionBuilder}>
-      <AppContent />
+      <main className="h-screen flex flex-col overflow-hidden">
+        <MainView />
+      </main>
     </SpacetimeDBProvider>
   );
 }

@@ -12,3 +12,4 @@ crate-type = ["cdylib"]
 spacetimedb = { version = "2.0.2", features = ["rand"] }
 log = "0.4"
 rand = "0.8"
+fxhash = "0.2.1"
