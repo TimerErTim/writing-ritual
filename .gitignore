@@ -1,6 +1,7 @@
 # --- SpacetimeDB & Rust ---
 /spacetimedb/target
 **/*.rs.bk
+spacetime.local.json
 
 # --- Frontend / Node ---
 node_modules/

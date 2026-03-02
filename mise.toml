@@ -35,11 +35,14 @@ run = "spacetime generate --lang ts --out-dir web/src/module_bindings --yes"
 [tasks.build]
 description = "Build SpacetimeDB module and frontend"
 depends = ["build:spacetimedb", "build:web"]
-run = "spacetime build"
 
 [tasks."publish:spacetimedb"]
 description = "Publish SpacetimeDB module"
-run = "spacetime publish"
+run = [
+    "spacetime logout",
+    'spacetime login --token "${SPACETIME_TOKEN}"',
+    "spacetime publish --yes"
+]
 
 [tasks."dev:web"]
 description = "Start frontend development server"

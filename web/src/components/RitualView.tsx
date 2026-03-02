@@ -1,9 +1,12 @@
 "use client";
 
+import { hasFlag } from "country-flag-icons";
 import { useMemo, useState } from "react";
 import { useTable, useReducer } from "spacetimedb/react";
 import { tables, reducers } from "@/module_bindings";
 import type { Message } from "@/module_bindings/types";
+
+const FLAG_CDN_BASE = "https://purecatamphetamine.github.io/country-flag-icons/3x2";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -18,10 +21,38 @@ function formatMessageTime(sent: Message["sent"]): string {
   });
 }
 
+function getCountryTag(location: Message["location"]): string {
+  if (!location || typeof location !== "object") return "";
+  return "tag" in location ? String((location as { tag: string }).tag) : "";
+}
+
 function formatCountry(location: Message["location"]): string {
-  if (!location || typeof location !== "object") return "—";
-  const tag = "tag" in location ? (location as { tag: string }).tag : "";
-  return String(tag).toUpperCase() || "—";
+  const tag = getCountryTag(location);
+  return tag ? tag.toUpperCase() : "—";
+}
+
+/** High-quality SVG flag from country-flag-icons CDN (ISO 3166-1 alpha-2). */
+function CountryFlag({
+  code,
+  title,
+  className,
+}: {
+  code: string;
+  title?: string;
+  className?: string;
+}) {
+  const upper = code.toUpperCase();
+  if (!upper || !hasFlag(upper)) return null;
+  return (
+    <img
+      src={`${FLAG_CDN_BASE}/${upper}.svg`}
+      alt=""
+      title={title ?? upper}
+      className={className}
+      width={24}
+      height={16}
+    />
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -31,14 +62,19 @@ function formatCountry(location: Message["location"]): string {
 type MessageItem = Message & { type: "ghost" | "initiator" };
 
 function GhostMessageBubble({ message }: { message: Message }) {
+  const countryTag = getCountryTag(message.location);
+  const code = countryTag ? countryTag.toUpperCase() : "";
   return (
     <div className="flex justify-start">
       <div className="max-w-[85%] rounded-2xl rounded-bl-md bg-stone-600/80 px-4 py-2 text-stone-100">
         <p className="text-sm whitespace-pre-wrap wrap-break-word">
           {message.text || "\u00A0"}
         </p>
-        <p className="mt-1 text-xs text-stone-400">
-          {formatMessageTime(message.sent)} · {formatCountry(message.location)}
+        <p className="mt-1 flex items-center gap-1.5 text-xs text-stone-400">
+          {formatMessageTime(message.sent)}
+          <span className="text-stone-500">·</span>
+          <CountryFlag code={code} title={code} className="inline-block size-4 rounded-sm object-cover" />
+          {formatCountry(message.location)}
         </p>
       </div>
     </div>
@@ -46,14 +82,19 @@ function GhostMessageBubble({ message }: { message: Message }) {
 }
 
 function InitiatorMessageBubble({ message }: { message: Message }) {
+  const countryTag = getCountryTag(message.location);
+  const code = countryTag ? countryTag.toUpperCase() : "";
   return (
     <div className="flex justify-end">
       <div className="max-w-[85%] rounded-2xl rounded-br-md bg-amber-900/60 px-4 py-2 text-amber-100">
         <p className="text-sm whitespace-pre-wrap wrap-break-word">
           {message.text || "\u00A0"}
         </p>
-        <p className="mt-1 text-right text-xs text-amber-200/70">
-          {formatMessageTime(message.sent)} · {formatCountry(message.location)}
+        <p className="mt-1 flex items-center justify-end gap-1.5 text-xs text-amber-200/70">
+          {formatMessageTime(message.sent)}
+          <span className="text-amber-200/50">·</span>
+          <CountryFlag code={code} title={code} className="inline-block size-4 rounded-sm object-cover" />
+          {formatCountry(message.location)}
         </p>
       </div>
     </div>
