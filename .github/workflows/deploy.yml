@@ -43,7 +43,7 @@ jobs:
         run: mise run check
 
       - name: Build
-        run: mise run build
+        run: MISE_JOBS=1 mise run build
         env:
           NEXT_PUBLIC_SPACETIMEDB_URI: https://maincloud.spacetimedb.com
           NEXT_PUBLIC_SPACETIMEDB_MODULE: timerertim-writing-ritual-01
