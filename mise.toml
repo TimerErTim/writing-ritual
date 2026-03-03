@@ -33,7 +33,7 @@ description = "Build SpacetimeDB module"
 dir = "{{ config_root }}/spacetimedb"
 run = [
     "spacetime build",
-    "cp spacetimedb/target/wasm32-unknown-unknown/release/writing-ritual.opt.wasm spacetimedb/target/wasm32-unknown-unknown/release/module.opt.wasm"
+    "cp spacetimedb/target/wasm32-unknown-unknown/release/writing_ritual.opt.wasm spacetimedb/target/wasm32-unknown-unknown/release/module.opt.wasm"
 ]
 
 [tasks."generate:spacetimedb_bindings"]
