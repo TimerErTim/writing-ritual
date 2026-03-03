@@ -31,7 +31,10 @@ run = "npm run build"
 [tasks."build:spacetimedb"]
 description = "Build SpacetimeDB module"
 dir = "{{ config_root }}/spacetimedb"
-run = "spacetime build"
+run = [
+    "spacetime build",
+    "cp spacetimedb/target/wasm32-unknown-unknown/release/writing-ritual.opt.wasm spacetimedb/target/wasm32-unknown-unknown/release/module.opt.wasm"
+]
 
 [tasks."generate:spacetimedb_bindings"]
 description = "Generate SpacetimeDB bindings"
@@ -43,10 +46,11 @@ depends = ["build:spacetimedb", "build:web"]
 
 [tasks."publish:spacetimedb"]
 description = "Publish SpacetimeDB module"
+wait_for = ["build:spacetimedb"]
 run = [
     "spacetime logout",
     'spacetime login --token "${SPACETIME_TOKEN}"',
-    "spacetime publish --yes"
+    "spacetime publish --yes --bin-path spacetimedb/target/wasm32-unknown-unknown/release/module.opt.wasm"
 ]
 
 [tasks."dev:web"]

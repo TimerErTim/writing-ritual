@@ -7,7 +7,7 @@ import { MainView } from "@/components/MainView";
 
 export function AppShell() {
   const uri = process.env.NEXT_PUBLIC_SPACETIMEDB_URI ?? "http://localhost:3000";
-  const dbName = process.env.NEXT_PUBLIC_SPACETIMEDB_MODULE ?? "hive-author-01";
+  const dbName = process.env.NEXT_PUBLIC_SPACETIMEDB_MODULE ?? "writing-ritual-01";
   const storage =
     typeof window !== "undefined" && window.localStorage ? window.localStorage : null;
 

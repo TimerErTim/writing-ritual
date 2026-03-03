@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Aether: The Graveyard of Voices",
-  description: "Anonymous real-time séance — reanimate the voices of the past.",
+  title: "The Ritual",
+  description: "Collaborative writing ritual",
 };
 
 export default function RootLayout({
