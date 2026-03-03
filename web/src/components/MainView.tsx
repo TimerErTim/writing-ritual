@@ -378,7 +378,7 @@ export function MainView() {
   };
 
   return (
-    <div className="flex flex-col h-svh bg-stone-950 text-stone-200 font-sans selection:bg-amber-900/50">
+    <div className="flex flex-col h-dvh bg-stone-950 text-stone-200 font-sans selection:bg-amber-900/50">
 
       {/* HEADER */}
       <header className="shrink-0 h-14 border-b border-stone-800 bg-stone-900/50 backdrop-blur-md flex items-center justify-between px-6 z-10">
